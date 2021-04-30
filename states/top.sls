@@ -8,14 +8,8 @@ base:
     
 dev:
   '*':
-    - python
-    - files
-    - ldap
-    - files.ext-files-second
+    - echo
     
 qa:
   '*':
-    - python
-    - files
-    - ldap
-    - files.ext-files-second
+    - echo
