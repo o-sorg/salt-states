@@ -10,14 +10,14 @@ base:
     - kernel
 
 dev:
-  '*1':
+  'minion1':
     - python
     - files
     - ldap
     - files.ext-files-second
     
 qa:
-  '*2':
+  'minion2':
     - python
     - files
     - ldap
