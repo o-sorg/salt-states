@@ -15,5 +15,5 @@ qa:
     - echo
 
 prod:
-  '*'
+  '*':
     - echo
