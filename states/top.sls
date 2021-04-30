@@ -4,20 +4,17 @@
 
 base:
   '*':
-    - core
-  'kernel:Linux':
-    - match: grain
-    - kernel
-
+    - noop
+    
 dev:
-  'minion1':
+  '*':
     - python
     - files
     - ldap
     - files.ext-files-second
     
 qa:
-  'minion2':
+  '*':
     - python
     - files
     - ldap
