@@ -1,3 +1,3 @@
 echo:
    cmd.run:
-     - name: /usr/bin/echo "dev"
+     - name: /usr/bin/echo "qa"
