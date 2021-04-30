@@ -1,3 +1,0 @@
-xcbc:
-  kmod:
-    - present
