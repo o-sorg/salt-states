@@ -1,3 +1,3 @@
-qa:
+base:
   '*':
-    - default-qa
+    - default
