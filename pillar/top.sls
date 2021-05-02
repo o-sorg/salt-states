@@ -1,3 +1,3 @@
-dev:
+qa:
   '*':
-    - default-dev
+    - default-qa
