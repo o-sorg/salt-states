@@ -24,23 +24,23 @@ Master config file layout:
 
 # overwrite top.sls from git branch main
 base:
-  '*':
+  "*":
     - common
     - echo
 
 # overwrite top.sls from git branch dev
 dev:
-  'nomatch':
+  "nomatch":
     - noop
 
 # overwrite top.sls from git branch qa
 qa:
-  'nomatch':
+  "nomatch":
     - noop
 ```
 
 ```yaml
-# file: /srv/salt/top.sls
+# file: /etc/salt/master
 
 # base is the default
 default_top: base
@@ -80,4 +80,25 @@ gitfs_env_whitelist:
 # general git config
 gitfs_global_lock: False
 gitfs_update_interval: 60
+
+# pillar config
+
+pillarenv_from_saltenv: True
+pillar_roots:
+  base:
+    - /srv/pillar
+ext_pillar:
+  - git:
+      - git://github.com/o-sorg/salt-states.git
+
+git_pillar_refspecs:
+  - "+refs/heads/*:refs/remotes/origin/*"
+
+git_pillar_branch: main
+git_pillar_base: main
+git_pillar_root: pillar
+
+pillar_source_merging_strategy: none
+
+git_pillar_global_lock: False
 ```

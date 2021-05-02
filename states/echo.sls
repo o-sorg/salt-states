@@ -1,3 +1,3 @@
 echo:
    cmd.run:
-     - name: /usr/bin/echo "{{ saltenv }}"
+     - name: /usr/bin/echo "{{ pillar['environment'] }}"
