@@ -1,1 +1,1 @@
-environment: Production
+environment: {{saltenv}}
