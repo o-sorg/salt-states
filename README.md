@@ -71,34 +71,48 @@ gitfs_base: main
 # states are in the subfolder states
 gitfs_root: states
 
-# only look in this branches for envs
-gitfs_env_whitelist:
-  - main
+# only look for this environments
+gitfs_saltenv_whitelist:
+  - base
   - dev
   - qa
+
+# only load branches
+gitfs_refspecs:
+  - "+refs/heads/*:refs/remotes/origin/*"
 
 # general git config
 gitfs_global_lock: False
 gitfs_update_interval: 60
 
-# pillar config
-
+# saltenv = pillarenv
 pillarenv_from_saltenv: True
+
+# default pillar dir config
 pillar_roots:
   base:
     - /srv/pillar
+
 ext_pillar:
   - git:
       - git://github.com/o-sorg/salt-states.git
 
+# only load branches
 git_pillar_refspecs:
   - "+refs/heads/*:refs/remotes/origin/*"
 
+# main is the new master
 git_pillar_branch: main
 git_pillar_base: main
+
+# load pillars form pillar subdir
 git_pillar_root: pillar
 
+# we don't need to be smart..
 pillar_source_merging_strategy: none
+# master fs Pillar wins
+ext_pillar_first: True
 
+# disable global lock in single-master deployment
 git_pillar_global_lock: False
 ```
