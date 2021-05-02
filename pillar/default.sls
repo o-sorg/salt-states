@@ -1,1 +1,1 @@
-environment: {{saltenv}}
+environment: Development
