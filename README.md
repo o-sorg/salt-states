@@ -1,25 +1,33 @@
 # Salt git scaffolding
 
-## Master config
+With this setup we can test and develop in a defined set of git branches (e.g. dev and qa) and run tests against any machines like this:
+`salt 'hostname' state.apply saltenv=dev` ; without interfering with the production (`base`) environment.
+
+Once changes are merged into the `main` branch **and the new state is added to `/srv/salt/top.sls`**, changed/new states are available in highstates without setting the environment explicit with `saltenv`.
+
+## Salt Master setup
 
 ```bash
 /srv
 ├── pillar
-│   ├── default.sls
-│   └── top.sls
+│   ├── default.sls         # empty by default
+│   └── top.sls             # overwrite
 └── salt
-    ├── common
+    ├── common              # local state example
     │   ├── init.sls
     │   └── packages.sls
-    └── top.sls
+    └── top.sls             # highstate top.sls, make sure to add new states here, once they should be available in prod!
 ```
 
 ```yaml
 # file: /srv/pillar/top.sls
+# This can be used to overwrite pillars coming from git by adding those to the default.sls for examle.
+# !! Local pillars will take precedence.
+# Pillars that are not locally available will be loaded from the main git branch.
 
 base:
   "*":
-    - default
+    - default # empty by default, can be used to overwrite pillars coming from git
 ```
 
 ```yaml
@@ -35,24 +43,25 @@ base:
   "*":
     - common
     - echo
+    # - add new states here once they should go to prod
 
-# overwrite top.sls from git branch dev
+# overwrite top.sls from git branch dev, so it does not interfere with the base environment
 dev:
-  "nomatch":
-    - noop
+  "nomatch": # matches nothing
+    - noop # does nothing
 
-# overwrite top.sls from git branch qa
+# overwrite top.sls from git branch qa, so it does not interfere with the base environment
 qa:
-  "nomatch":
-    - noop
+  "nomatch": # matches nothing
+    - noop # does nothing
 ```
 
 ```yaml
 # file: /etc/salt/master
 
-# base is the default
+# base is the default environment
 default_top: base
-# important to have actual staging, 'same' would brake this.
+# to have staging this needs to be 'merge', 'same' would brake this.
 top_file_merging_strategy: merge
 
 # load states for base from salt-master roots
@@ -129,4 +138,23 @@ ext_pillar_first: True
 
 # disable global lock. Best practice in single-master deployments
 git_pillar_global_lock: False
+```
+
+## Testing
+
+```bash
+# Clear cache and reload pillars:
+salt 'testmachine' saltutil.clear_cache
+salt 'testmachine' saltutil.refresh_pillar
+
+# Testing in dev
+salt 'testmachine' pillar.items saltenv=dev
+salt 'testmachine' state.show_top saltenv=dev
+salt 'testmachine' state.apply saltenv=dev
+
+# Testing in qa
+salt 'testmachine' pillar.items saltenv=qa
+salt 'testmachine' state.show_top saltenv=qa
+salt 'testmachine' state.apply saltenv=qa
+
 ```
