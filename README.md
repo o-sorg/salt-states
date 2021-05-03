@@ -1,6 +1,6 @@
 # Salt git scaffolding
 
-Master config file layout:
+## Master config
 
 ```bash
 /srv
@@ -12,6 +12,14 @@ Master config file layout:
     │   ├── init.sls
     │   └── packages.sls
     └── top.sls
+```
+
+```yaml
+# file: /srv/pillar/top.sls
+
+base:
+  "*":
+    - default
 ```
 
 ```yaml
@@ -47,7 +55,7 @@ default_top: base
 # important to have actual staging, 'same' would brake this.
 top_file_merging_strategy: merge
 
-# base is also on master fs
+# load states for base from salt-master roots
 file_roots:
   base:
     - /srv/salt/
@@ -61,15 +69,19 @@ fileserver_backend:
 gitfs_remotes:
   - git://github.com/o-sorg/salt-states.git
 
-# only search in branches for envs
-gitfs_ref_types:
-  - branch
-
-# base is in main branch
+# main is the new master..
 gitfs_base: main
 
-# states are in the subfolder states
+# load states form states subfolder
 gitfs_root: states
+
+# only load branches, ignore tags etc.
+gitfs_refspecs:
+  - "+refs/heads/*:refs/remotes/origin/*"
+
+# only look in branches for environments
+gitfs_ref_types:
+  - branch
 
 # only look for this environments
 gitfs_saltenv_whitelist:
@@ -77,42 +89,44 @@ gitfs_saltenv_whitelist:
   - dev
   - qa
 
-# only load branches
-gitfs_refspecs:
-  - "+refs/heads/*:refs/remotes/origin/*"
-
-# general git config
+# disable global lock. Best practice in single-master deployments
 gitfs_global_lock: False
+
+# update every 60 sec
 gitfs_update_interval: 60
 
 # saltenv = pillarenv
 pillarenv_from_saltenv: True
 
-# default pillar dir config
+# load pillars for base from salt-master roots
 pillar_roots:
   base:
     - /srv/pillar
 
-ext_pillar:
-  - git:
-      - git://github.com/o-sorg/salt-states.git
-
-# only load branches
+# only load branches, ignore tags etc.
 git_pillar_refspecs:
   - "+refs/heads/*:refs/remotes/origin/*"
 
-# main is the new master
+# only map this branches to environments
+ext_pillar:
+  - git:
+      - main git://github.com/o-sorg/salt-states.git
+      - dev git://github.com/o-sorg/salt-states.git
+      - qa git://github.com/o-sorg/salt-states.git
+
+# main is the new master..
 git_pillar_branch: main
 git_pillar_base: main
 
-# load pillars form pillar subdir
+# load pillars form pillar subfolder
 git_pillar_root: pillar
 
 # we don't need to be smart..
 pillar_source_merging_strategy: none
-# master fs Pillar wins
+
+# master roots Pillar wins
 ext_pillar_first: True
 
-# disable global lock in single-master deployment
+# disable global lock. Best practice in single-master deployments
 git_pillar_global_lock: False
 ```

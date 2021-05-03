@@ -13,7 +13,3 @@ dev:
 qa:
   '*':
     - echo
-
-prod:
-  '*':
-    - echo
