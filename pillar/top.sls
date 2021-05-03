@@ -1,3 +1,3 @@
 "{{saltenv}}":
   '*':
-    - default
+    - echo
