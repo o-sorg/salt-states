@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-2004-3003-0-py3
+          # - ubuntu-2004-3003-0-py3
           - ubuntu-1804-3000-9-py3
     steps:
       - uses: actions/checkout@v2
