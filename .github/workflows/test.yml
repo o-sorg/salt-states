@@ -1,0 +1,38 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  Tests:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-2004-3003-0-py3
+          - ubuntu-1804-3000-9-py3
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install System Deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl git python3-pip ruby-dev ruby-bundler shellcheck virtualenv
+
+      - name: Install Ruby Deps
+        run: |
+          /usr/bin/bundle config set --local path 'bundle'
+          /usr/bin/bundle install
+
+      - name: Test
+        run: |
+          cp .kitchen.yml states/
+          cd states/
+          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen converge ${{ matrix.os }}
+          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen verify ${{ matrix.os }}
+
+      - name: Cleanup
+        run: |
+          cd states/
+          /usr/bin/bundle exec kitchen destroy ${{ matrix.os }}
+          rm .kitchen.yml
