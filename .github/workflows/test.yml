@@ -21,10 +21,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl git ruby-dev ruby-bundler
 
-      - name: Install Ruby Deps
-        run: |
-          /usr/bin/bundle config set --local path 'bundle'
-          /usr/bin/bundle install
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Test
         run: |
@@ -35,13 +35,13 @@ jobs:
           cp -a pillar build/
           cp .kitchen.yml build/salt/
           cd build/salt/
-          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen converge ${BRANCH}-${{ matrix.os }}
-          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen verify ${BRANCH}-${{ matrix.os }}
+          LANG=en_US.UTF-8 bundle exec kitchen converge ${BRANCH}-${{ matrix.os }}
+          LANG=en_US.UTF-8 bundle exec kitchen verify ${BRANCH}-${{ matrix.os }}
 
       - name: Cleanup
         if: always()
         run: |
           cd build/salt/
-          /usr/bin/bundle exec kitchen destroy
+          bundle exec kitchen destroy
           cd ../..
           rm -rf build/
