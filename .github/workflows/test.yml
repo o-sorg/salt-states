@@ -9,8 +9,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          # - ubuntu-2004-3003-0-py3
-          - ubuntu-1804-3000-9-py3
+          - ubuntu-2004-3003-0-py3
+          - amazonlinux-2-3000-9-py3
+          - centos-8-3000-9-py3
+          - opensuse-leap-152-3000-9-py3
     steps:
       - uses: actions/checkout@v2
 
@@ -32,6 +34,7 @@ jobs:
           LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen verify ${{ matrix.os }}
 
       - name: Cleanup
+        if: always()
         run: |
           cd states/
           /usr/bin/bundle exec kitchen destroy ${{ matrix.os }}
