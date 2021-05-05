@@ -1,3 +1,7 @@
+
+coreutils:
+  pkg.installed
+
 echo:
    cmd.run:
-     - name: /usr/bin/echo "{{ pillar['environment'] }}"
+     - name: echo "{{ pillar['environment'] }}"
