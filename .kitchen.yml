@@ -76,7 +76,7 @@ verifier:
     - cli
 
 suites:
-  - name: default
+  - name: dev
     include:
       - ubuntu-2004-3003-0-py3
       - ubuntu-1804-3000-9-py3
@@ -86,6 +86,30 @@ suites:
       - opensuse-leap-152-3000-9-py3
     provisioner:
       salt_env: dev
+    verifier:
+      inspec_tests:
+        - path: ../test/integration/default
+  - name: qa
+    include:
+      - ubuntu-2004-3003-0-py3
+      - ubuntu-1804-3000-9-py3
+      - amazonlinux-2-3000-9-py3
+      - centos-8-3000-9-py3
+      - centos-7-3000-9-py3
+      - opensuse-leap-152-3000-9-py3
+    provisioner:
+      salt_env: qa
+    verifier:
+      inspec_tests:
+        - path: ../test/integration/default
+  - name: main
+    include:
+      - ubuntu-2004-3003-0-py3
+      - ubuntu-1804-3000-9-py3
+      - amazonlinux-2-3000-9-py3
+      - centos-8-3000-9-py3
+      - centos-7-3000-9-py3
+      - opensuse-leap-152-3000-9-py3
     verifier:
       inspec_tests:
         - path: ../test/integration/default

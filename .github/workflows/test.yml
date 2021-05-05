@@ -9,17 +9,17 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-2004-3003-0-py3
-          - amazonlinux-2-3000-9-py3
-          - centos-8-3000-9-py3
-          - opensuse-leap-152-3000-9-py3
+          - ubuntu-2004
+          - amazonlinux-2
+          - centos-8-3000
+          - opensuse-leap-152
     steps:
       - uses: actions/checkout@v2
 
       - name: Install System Deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl git python3-pip ruby-dev ruby-bundler shellcheck virtualenv
+          sudo apt-get install -y curl git ruby-dev ruby-bundler
 
       - name: Install Ruby Deps
         run: |
@@ -28,14 +28,20 @@ jobs:
 
       - name: Test
         run: |
-          cp .kitchen.yml states/
-          cd states/
-          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen converge ${{ matrix.os }}
-          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen verify ${{ matrix.os }}
+          BRANCH=${GITHUB_REF##*\/}
+          echo "|dev|qa|main|" | grep "|${BRANCH}|" || (echo "the branch: ${BRANCH} is not supported!"; exit 1)
+          mkdir -p build/salt
+          cp -a states/* build/salt/
+          cp -a pillar build/
+          cp .kitchen.yml build/salt/
+          cd build/salt/
+          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen converge ${BRANCH}-${{ matrix.os }}
+          LANG=en_US.UTF-8 /usr/bin/bundle exec kitchen verify ${BRANCH}-${{ matrix.os }}
 
       - name: Cleanup
         if: always()
         run: |
-          cd states/
-          /usr/bin/bundle exec kitchen destroy ${{ matrix.os }}
-          rm .kitchen.yml
+          cd build/salt/
+          /usr/bin/bundle exec kitchen destroy
+          cd ../..
+          rm -rf build/
