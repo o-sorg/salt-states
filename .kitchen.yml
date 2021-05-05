@@ -88,7 +88,7 @@ suites:
       salt_env: dev
     verifier:
       inspec_tests:
-        - path: ../test/integration/default
+        - path: ../../test/integration/default
   - name: qa
     include:
       - ubuntu-2004-3003-0-py3
@@ -101,7 +101,7 @@ suites:
       salt_env: qa
     verifier:
       inspec_tests:
-        - path: ../test/integration/default
+        - path: ../../test/integration/default
   - name: main
     include:
       - ubuntu-2004-3003-0-py3
@@ -112,4 +112,4 @@ suites:
       - opensuse-leap-152-3000-9-py3
     verifier:
       inspec_tests:
-        - path: ../test/integration/default
+        - path: ../../test/integration/default
