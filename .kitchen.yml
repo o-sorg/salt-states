@@ -110,6 +110,8 @@ suites:
       - centos-8-3000-9-py3
       - centos-7-3000-9-py3
       - opensuse-leap-152-3000-9-py3
+    provisioner:
+      salt_env: base
     verifier:
       inspec_tests:
         - path: ../../test/integration/default

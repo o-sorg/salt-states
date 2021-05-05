@@ -5,9 +5,10 @@ on:
     branches:
       - main
   push:
-    paths-ignore:
-      - ".github/**"
-
+    paths:
+      - "pillar/**"
+      - "states/**"
+      - "test/**"
 jobs:
   Tests:
     runs-on: ubuntu-20.04
